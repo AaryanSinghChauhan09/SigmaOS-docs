@@ -1,0 +1,10 @@
+[package]
+name = "sigmaos_docs"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "sigmaos_docs"
+path = "src/lib.rs"
+
+[dependencies]
