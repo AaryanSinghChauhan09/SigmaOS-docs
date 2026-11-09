@@ -1,13 +1,14 @@
-# Last synced: 2026-11-06T07:21:46Z
+# Last synced: 2026-11-09T05:47:06Z
 # SigmaOS Component Registry
 # Generated single source of truth for the multi-repository ecosystem.
 # Modelled on Linux Mint & Omarchy Linux sub-repository architecture.
-# Registry audit baseline: 1,635 declarations / 1,584 unique component names.
-# Keep this comment synchronized with `make registry-audit`; duplicate names are
-# reported rather than silently discarded.
-# GitHub account audit (2026-10-31): 308 SigmaOS-prefixed repositories;
-# all are represented by registry URLs. 1,557 unique URLs are declared, of
-# which 1,249 are unpublished; 25 extra component names alias existing URLs.
+# Registry audit (2026-11-08): 1,643 declarations / 1,592 unique names.
+# 45 names have repeated declarations with conflicting metadata and remain
+# visible for explicit reconciliation; consumers must not silently choose one.
+# GitHub account audit (2026-11-08): 1,081 SigmaOS-prefixed repositories;
+# 325 of 1,563 declared repository URLs are published, 756 account repositories
+# lack registry records, and 1,238 declared URLs are not present in the account.
+# See `scripts/audit_component_fleet.py --github` for the read-only audit.
 #
 # Classification complete: All 1,635 components have explicit engine and category.
 # Last updated by classify.py (Phase 1 Task 1.2)
@@ -59,12 +60,12 @@ depends_on = ["SigmaOS-kernel"]
 
 [[component]]
 name = "SigmaOS-system"
-description = "Init, service manager & system orchestration"
+description = "Init, service manager, system orchestration, and advisory PSI-based memory-pressure policy"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-system"
 engine = "system_core"
 category = "System Services"
 language = "rust"
-inspirations = ["native"]
+inspirations = ["https://github.com/systemd/systemd", "https://github.com/rfjakob/earlyoom"]
 visibility = "private"
 depends_on = ["SigmaOS-filesystem", "SigmaOS-kernel", "SigmaOS-security"]
 
@@ -81,7 +82,7 @@ depends_on = ["SigmaOS-filesystem", "SigmaOS-kernel", "SigmaOS-network", "SigmaO
 
 [[component]]
 name = "SigmaOS-packages"
-description = "Package manager core (resolve, install, verify)"
+description = "Validated package catalog, deterministic dependency planning, and installed-package metadata inventory; does not install packages or verify artifact bytes"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-packages"
 engine = "pkg_core"
 category = "Package Management"
@@ -169,11 +170,11 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-power-manager"
-description = "Battery / power-profile & idle management"
+description = "Pure Rust policy for lid-close and idle-timeout decisions; delegates hardware actions to integration backends"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-power-manager"
 engine = "power_manager"
 category = "System Services"
-language = "shell"
+language = "rust"
 inspirations = ["https://github.com/linuxmint/xfce4-power-manager"]
 visibility = "public"
 depends_on = ["SigmaOS-system"]
@@ -1702,7 +1703,7 @@ description = "Bluetooth manager for SigmaOS"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-blueman"
 engine = "bluetooth"
 category = "Drivers & Hardware"
-language = "unknown"
+language = "rust"
 inspirations = "None"
 visibility = "public"
 depends_on = ["SigmaOS-system"]
@@ -2809,11 +2810,11 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-software-center"
-description = "Software center component for SigmaOS"
+description = "Application catalog with validated listings, exact ID lookup, title search, and Flatpak filtering; does not install applications"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-software-center"
 engine = "software_manager"
 category = "Package Management"
-language = "unknown"
+language = "rust"
 inspirations = "None"
 visibility = "public"
 depends_on = ["SigmaOS-system"]
@@ -3414,11 +3415,11 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-driver-manager"
-description = "Driver manager component for SigmaOS"
+description = "Validated device-driver registration, exact PCI matching, and in-memory lifecycle state"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-driver-manager"
 engine = "driver_manager"
 category = "Drivers & Hardware"
-language = "unknown"
+language = "rust"
 inspirations = "None"
 visibility = "public"
 depends_on = ["SigmaOS-system"]
@@ -9651,12 +9652,12 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-pacman"
-description = "Package manager component for SigmaOS inspired by Arch Linux pacman"
+description = "Pacman compatible package tooling with makepkg source checksums and Arch PKGBUILD name/version/release validation"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-pacman"
 engine = "pkg_manager"
 category = "Package Management"
 language = "shell"
-inspirations = ["https://archlinux.org", "https://github.com/archlinux/pacman"]
+inspirations = ["https://archlinux.org", "https://github.com/archlinux/pacman", "https://man.archlinux.org/man/makepkg.8", "https://man.archlinux.org/man/PKGBUILD.5.en.html"]
 visibility = "public"
 depends_on = ["SigmaOS-system"]
 
@@ -9717,12 +9718,12 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-rolling-release"
-description = "Rolling release update system component for SigmaOS"
+description = "Rolling release update planning from repository snapshots, full-plan version preflight, and safe pacnew maintenance"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-rolling-release"
 engine = "update_manager"
 category = "Utilities"
 language = "shell"
-inspirations = ["https://archlinux.org", "https://github.com/archlinux"]
+inspirations = ["https://archlinux.org", "https://github.com/archlinux", "https://wiki.archlinux.org/title/System_maintenance", "https://wiki.archlinux.org/title/pacman/Pacnew_and_Pacsave"]
 visibility = "public"
 depends_on = ["SigmaOS-system"]
 
@@ -10267,12 +10268,12 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-pacman-contrib"
-description = "Pacman contrib tools for SigmaOS"
+description = "Pacman contrib tools with ALPM version checks, cache pruning, and SHA-256 PKGBUILD checksums"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-pacman-contrib"
 engine = "package_tools"
 category = "Package Management"
 language = "c"
-inspirations = ["https://archlinux.org", "https://github.com/archlinux/pacman-contrib"]
+inspirations = ["https://archlinux.org", "https://github.com/archlinux/pacman-contrib", "https://man.archlinux.org/man/core/pacman/vercmp.8.en", "https://man.archlinux.org/man/paccache.8", "https://man.archlinux.org/man/updpkgsums.8.en"]
 visibility = "public"
 depends_on = ["SigmaOS-system"]
 
@@ -11301,11 +11302,11 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-firewall"
-description = "Firewall component for SigmaOS"
+description = "Reusable firewall rule, chain, NAT, and connection-tracking policy models; no host rules are applied by this crate"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-firewall"
 engine = "firewall"
-category = "Utilities"
-language = "shell"
+category = "Security"
+language = "rust"
 inspirations = ["https://archlinux.org", "https://github.com/nftables"]
 visibility = "public"
 depends_on = ["SigmaOS-system"]
@@ -11888,7 +11889,7 @@ description = "Update manager for SigmaOS inspired by Arch Linux"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-arch-update"
 engine = "update_manager"
 category = "Utilities"
-language = "c"
+language = "rust"
 inspirations = ["https://archlinux.org", "https://github.com/archlinux/update-manager"]
 visibility = "public"
 depends_on = ["SigmaOS-system"]
@@ -17890,14 +17891,14 @@ depends_on = ["SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-mintupdate"
-description = "SigmaOS software update manager inspired by mintupdate"
+description = "Mint-inspired update policy and backend-reported update lifecycle; no repository or package operations"
 repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-mintupdate"
 engine = "update_checker"
 category = "Package Management"
 language = "rust"
 visibility = "public"
 canonical_branch = "main"
-depends_on = ["SigmaOS-system"]
+depends_on = ["SigmaOS-packages", "SigmaOS-system"]
 
 [[component]]
 name = "SigmaOS-ml"
@@ -18063,3 +18064,14 @@ category = "Developer Tools"
 language = "unknown"
 visibility = "public"
 depends_on = []
+
+[[component]]
+name = "SigmaOS-craft-core"
+description = "Shared creative project manifests, path-safe asset metadata, and format plugin registry"
+repo = "https://github.com/AaryanSinghChauhan09/SigmaOS-craft-core"
+engine = "craft_core"
+category = "Creative & Design"
+language = "rust"
+inspirations = ["https://github.com/linuxmint/drawing", "https://github.com/omacom/aether"]
+visibility = "public"
+depends_on = ["SigmaOS-core"]
