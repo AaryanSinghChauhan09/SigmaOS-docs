@@ -1,5 +1,5 @@
 [component]
 name = "SigmaOS-docs"
-description = "Documentation tooling component"
+description = "User manual, installation, troubleshooting, architecture, and release guides"
 version = "0.1.0"
 tier = 2
